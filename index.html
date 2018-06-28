@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <title>Exercice 1</title>
+</head>
+<body>
+  <!-- Créer une liste avec trois éléments (Pierre, Feuille, Ciseaux). Ajouter un bouton « Shifumi ! ».
+   Lorsque l'on clique sur « Shifumi ! », choisir un élément au hasard (Pierre, Feuille ou Ciseaux).
+    Le comparer à l'élément choisi par le joueur pour voir qui a gagné entre l'humain et la machine.
+  Bonus : Ajouter un compteur de victoires et de défaites et afficher le pourcentage de victoire contre l'ordinateur. -->
+  <ul>
+    <li><input type="radio" value="pierre" id="pierre" name="shifumiChoice" /><label for="pierre">Pierre</label></li>
+    <li><input type="radio" value="feuille" id="feuille" name="shifumiChoice" /><label for="feuille">Feuille</label></li>
+    <li><input type="radio" value="ciseaux" id="ciseaux" name="shifumiChoice" /><label for="ciseaux">Ciseaux</label></li>
+  </ul>
+
+  <input type="button" name="button" value="Shifumi" id="buttonShifumi" />
+
+  <ul>
+    <li><input type="radio" value="iaNulle" id="iaNulle" name="bossChoice" /><label for="iaNulle">Robot nul</label></li>
+    <li><input type="radio" value="iaOp" id="iaOp" name="bossChoice" /><label for="iaOp">Robot 5.0</label></li>
+    <li><input type="radio" value="mickael" id="mickael" name="bossChoice" /><label for="mickael">Mickaël</label></li>
+  </ul>
+
+  <div>
+    <div id="result"></div>
+    <div id="win"></div>
+    <div id="lose"></div>
+    <div id="winrate"></div>
+  </div>
+  <div id="imgBoss"></div>
+  <script>
+    var win = 0;
+    var lose = 0;
+    var winrate = 0;
+    var random;
+    var randomShifumi;
+    var message;
+    var messageWin = 'gg';
+    var messageLose = 'perdu';
+    var messageTie = 'tie';
+    var shifumiChoice;
+    var paperAdapt = 297;
+    var rockAdapt = 649;
+
+    $('#buttonShifumi').click(function(){
+
+      shifumiChoice = $('input[name=shifumiChoice]:checked').val();
+      bossChoice = $('input[name=bossChoice]:checked').val();
+      random = Math.floor(Math.random() * 1000);
+      switch (bossChoice) {
+        case 'iaNulle':
+          if (random < 334) {
+            randomShifumi = 'feuille';
+          }else if(random < 667){
+            randomShifumi = 'pierre';
+          }else{
+            randomShifumi ='ciseaux';
+          }
+        $('#imgBoss').css({'background-image': 'url(iaNulle.jpg)',
+                           'width': '300px',
+                           'height': '300px'}
+          );
+        break;
+
+        case 'iaOp':
+          if (random < paperAdapt){
+            randomShifumi = 'feuille';
+          }else if(random < rockAdapt){
+            randomShifumi = 'pierre';
+          }else{
+            randomShifumi ='ciseaux';
+          }
+          $('#imgBoss').css({'background': 'iaOp.png', 'width': '300px', 'height': '300px'});
+        break;
+
+        case 'mickael':
+          if (shifumiChoice == 'feuille'){
+            randomShifumi = 'ciseaux';
+          }else if (shifumiChoice == 'pierre'){
+            randomShifumi = 'feuille';
+          }else{
+            randomShifumi = 'pierre'
+          }
+          $('#imgBoss').css({'background': 'mickael.jpg', 'width': '300px', 'height': '300px'});
+        break;
+        default:
+      }
+
+      switch (shifumiChoice) {
+        case 'pierre':
+          if (randomShifumi == 'pierre') {
+            message = messageTie;
+          }else if(randomShifumi == 'feuille'){
+            lose++;
+            message = messageLose;
+          }else{
+            win++;
+            message = messageWin;
+          }
+          paperAdapt = paperAdapt + (paperAdapt/100*3);
+          rockAdapt = rockAdapt - (rockAdapt/100*3);
+        break;
+        case 'feuille':
+          if (randomShifumi == 'pierre') {
+            message = messageWin;
+            win++;
+          }else if(randomShifumi == 'feuille'){
+            message = messageTie;
+          }else{
+            lose++;
+            message = messageLose;
+          }
+          paperAdapt = paperAdapt - (paperAdapt/100*3);
+          rockAdapt = rockAdapt + (rockAdapt/100*3);
+          break;
+          case 'ciseaux':
+          if (randomShifumi == 'pierre') {
+            lose++;
+            message = messageLose;
+          }else if(randomShifumi == 'feuille'){
+            win++;
+            message = messageWin;
+          }else{
+            message = messageTie;
+          }
+          paperAdapt = paperAdapt + (paperAdapt/100*3);
+          rockAdapt = rockAdapt + (rockAdapt/100*3);
+          break;
+        default:
+      }
+      winrate = win/(win + lose)*100;
+      $('#result').text(message);
+      $('#win').text('win : ' + win);
+      $('#lose').text('lose : ' + lose);
+      $('#winrate').text(winrate + '%');
+    });
+  </script>
+</body>
+</html>
